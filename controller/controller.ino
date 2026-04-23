@@ -6,7 +6,7 @@ const int MAX_POT_VAL = 1023;
 const int outPins[NUM_PINS] = {2,3,4,5,6,7};
 const int inPins[NUM_PINS]  = {A0,A1,A2,A3,A4,A5};
 
-DHT_nonblocking dht_sensor(inPins[1], DHT_TYPE_11);
+DHT_nonblocking dht_sensor(8, DHT_TYPE_11);
 
 void setup() {
   Serial.begin(9600);
@@ -33,7 +33,7 @@ void loop() {
   // feature selection
   switch(feature){
     case 0:
-      digitalWrite(outPins[0], HIGH);
+      //digitalWrite(outPins[0], HIGH);
 
       if (dht_ready) {
         Serial.print("T = ");
@@ -43,7 +43,6 @@ void loop() {
         Serial.println("%");
       }
       
-      debug(potValue, feature);
       break;
 
     case 1:
@@ -100,10 +99,9 @@ static bool measure_environment(float *temperature, float *humidity)
   static unsigned long last_output = 0;
   bool ready = dht_sensor.measure(temperature, humidity);
 
-  if (ready && millis() - last_output > 2000) {
+  if (ready && millis() - last_output > 3000ul) {
     last_output = millis();
     return true;
   }
-
   return false;
 }
