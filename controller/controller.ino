@@ -18,34 +18,42 @@ void loop() {
   switch(feature){ // feature implementation (simple console log for the meantime)
     case 1:
       off();
-      digitalWrite(outPins[0], HIGH); // testing region one with hardware
+      digitalWrite(outPins[0], HIGH);
+      debug(potValue, feature);
       break;
     case 2:
       off();
-      digitalWrite(outPins[1], HIGH); // testing region two with hardware
+      digitalWrite(outPins[1], HIGH);
+      debug(potValue, feature);
       break;
     case 3:
       off();
+      digitalWrite(outPins[2], HIGH);
       debug(potValue, feature);
       break;
     case 4:
       off();
+      digitalWrite(outPins[3], HIGH);
       debug(potValue, feature);
       break;
     case 5:
       off();
+      digitalWrite(outPins[4], HIGH);
       debug(potValue, feature);
       break;
     case 6:
       off();
+      digitalWrite(outPins[5], HIGH);
       debug(potValue, feature);
       break;
     case 7:
       off();
+      digitalWrite(outPins[6], HIGH);
       debug(potValue, feature);
       break;
     case 8:
       off();
+      digitalWrite(outPins[7], HIGH);
       debug(potValue, feature);
       break;
     default:
