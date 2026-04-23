@@ -33,7 +33,7 @@ void loop() {
   // feature selection
   switch(feature){
     case 0:
-      /*digitalWrite(outPins[0], HIGH);
+      digitalWrite(outPins[0], HIGH);
 
       if (dht_ready) {
         Serial.print("T = ");
@@ -42,7 +42,7 @@ void loop() {
         Serial.print(humidity, 1);
         Serial.println("%");
       }
-      */
+      
       debug(potValue, feature);
       break;
 
@@ -83,11 +83,16 @@ void off(){
     digitalWrite(outPins[i], LOW);
   }
 }
-void debug(int i, int j){
-  Serial.print("Value: ");
-  Serial.print(i);
-  Serial.print(" Region: ");
-  Serial.println(j);
+void debug(int value, int feature){
+  static int lastFeature = -1;
+
+  if (feature != lastFeature) {
+    Serial.print("Value: ");
+    Serial.print(value);
+    Serial.print(" Region: ");
+    Serial.println(feature);
+    lastFeature = feature;
+  }
 }
 // DHT11 (feature 1)
 static bool measure_environment(float *temperature, float *humidity)
