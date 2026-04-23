@@ -7,6 +7,7 @@ Currently under development.
 
 ### Demo Video
 ![Demo GIF](demos/IMG_9146[1].gif)
+
 *Potentiometer switching logic*
 
 ### Latest Photo
