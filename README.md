@@ -3,9 +3,15 @@ A portable Arduino-based environmental monitoring device that measures temperatu
 
 Currently under development.
 
-## Demo
+## Gallery
 
+### Demo Video
 ![Demo GIF](demos/IMG_9146[1].gif)
+*Potentiometer switching logic*
+
+### Latest Photo
+![Latest Demo](demos/IMG_9148[1].JPG)
+*DHT11 sensor implementation*
 
 ## Summary of software:
 - Environment: Arduino IDE.
