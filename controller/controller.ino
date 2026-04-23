@@ -22,7 +22,7 @@ void loop() {
       break;
     case 2:
       off();
-      debug(potValue, feature);
+      digitalWrite(outPins[1], HIGH); // testing region two with hardware
       break;
     case 3:
       off();
