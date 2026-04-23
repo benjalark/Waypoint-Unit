@@ -97,13 +97,13 @@ void debug(int value, int feature){
 // DHT11 (feature 1)
 static bool measure_environment(float *temperature, float *humidity)
 {
-  static unsigned long measurement_timestamp = 0;
-
-  // always call measure() to advance state machine
+  static unsigned long last_output = 0;
   bool ready = dht_sensor.measure(temperature, humidity);
-  if (ready) {
-    measurement_timestamp = millis();
+
+  if (ready && millis() - last_output > 2000) {
+    last_output = millis();
     return true;
   }
+
   return false;
 }
