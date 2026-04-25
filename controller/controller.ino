@@ -24,6 +24,7 @@ void setup() {
 void loop() {
   static float temperature;
   static float humidity;
+  static int lastFeature = -1;
 
   // ALWAYS service DHT (critical)
   bool dht_ready = measure_environment(&temperature, &humidity);
@@ -32,46 +33,46 @@ void loop() {
   int potValue = analogRead(A0);
   int feature = (potValue * NUM_MODES) / (MAX_POT_VAL + 1); // 0–5
 
+  if (feature != lastFeature) {
+    lcd.clear();           // clear screen on mode switch
+    lastFeature = feature;
+  }
   // turn everything off
   off();
 
   // feature selection
   switch(feature){
     case 0:
-      //digitalWrite(outPins[0], HIGH);
-
       if (dht_ready) {
-        lcd.print("T = ");
+        lcd.clear();  // clear before printing new reading
+
+        // Line 1: Temperature
+        lcd.setCursor(0, 0);
+        lcd.print("T: ");
         lcd.print(temperature, 1);
-        lcd.print(" C\nH = ");
+        lcd.print(" C");
+
+        // Line 2: Humidity
+        lcd.setCursor(0, 1);
+        lcd.print("H: ");
         lcd.print(humidity, 1);
-        lcd.print("%");
+        lcd.print(" %");
       }
-      
       break;
 
     case 1:
-      //digitalWrite(outPins[1], HIGH);
       debug(potValue, feature);
       break;
 
     case 2:
-      //digitalWrite(outPins[2], HIGH);
       debug(potValue, feature);
       break;
 
     case 3:
-      //digitalWrite(outPins[3], HIGH);
       debug(potValue, feature);
       break;
 
     case 4:
-      //digitalWrite(outPins[4], HIGH);
-      debug(potValue, feature);
-      break;
-
-    case 5:
-      //digitalWrite(outPins[5], HIGH);
       debug(potValue, feature);
       break;
 
