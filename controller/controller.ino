@@ -1,18 +1,23 @@
 #include <dht_nonblocking.h>
+#include <LiquidCrystal.h>
 
-const int NUM_PINS = 6;
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+const int NUM_MODES = 5;
 const int MAX_POT_VAL = 1023;
 
-const int outPins[NUM_PINS] = {2,3,4,5,6,7};
-const int inPins[NUM_PINS]  = {A0,A1,A2,A3,A4,A5};
+const int dataPins[NUM_MODES] = {6,7,8,9,10};
 
-DHT_nonblocking dht_sensor(8, DHT_TYPE_11);
+DHT_nonblocking dht_sensor(dataPins[2], DHT_TYPE_11);
 
 void setup() {
   Serial.begin(9600);
-
-  for(int i = 0; i < NUM_PINS; i++){
-    pinMode(outPins[i], OUTPUT);
+  lcd.begin(16, 2);
+  for(int i = 0; i < NUM_MODES; i++){
+    pinMode(dataPins[i], INPUT);
   }
 }
 
@@ -24,8 +29,8 @@ void loop() {
   bool dht_ready = measure_environment(&temperature, &humidity);
 
   // read potentiometer
-  int potValue = analogRead(inPins[0]);
-  int feature = (potValue * NUM_PINS) / (MAX_POT_VAL + 1); // 0–5
+  int potValue = analogRead(A0);
+  int feature = (potValue * NUM_MODES) / (MAX_POT_VAL + 1); // 0–5
 
   // turn everything off
   off();
@@ -36,11 +41,11 @@ void loop() {
       //digitalWrite(outPins[0], HIGH);
 
       if (dht_ready) {
-        Serial.print("T = ");
-        Serial.print(temperature, 1);
-        Serial.print(" C, H = ");
-        Serial.print(humidity, 1);
-        Serial.println("%");
+        lcd.print("T = ");
+        lcd.print(temperature, 1);
+        lcd.print(" C\nH = ");
+        lcd.print(humidity, 1);
+        lcd.print("%");
       }
       
       break;
@@ -78,8 +83,8 @@ void loop() {
 }
 void off(){
   // turn all pins off
-  for(int i = 0; i < NUM_PINS; i++){
-    digitalWrite(outPins[i], LOW);
+  for(int i = 0; i < NUM_MODES; i++){
+    digitalWrite(dataPins[i], LOW);
   }
 }
 void debug(int value, int feature){
