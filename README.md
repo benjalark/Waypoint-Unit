@@ -11,7 +11,7 @@ Currently under development.
 *Potentiometer switching logic*
 
 ### Latest Photo
-![Latest Demo](demos/IMG_9148[1].JPG)
+![Latest Demo](demos/IMG_9166.JPG)
 *DHT11 sensor implementation*
 
 ## Summary of software:
