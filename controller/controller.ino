@@ -52,6 +52,13 @@ void loop() {
   // turn everything off
   off();
 
+  // update gps while it's in use
+  if(1<=feature<=4){
+    while (ss.available() > 0){
+        gps.encode(ss.read());
+    }
+  }
+
   // feature selection
   switch(feature){
     case 0:
@@ -74,30 +81,58 @@ void loop() {
 
     case 1:
       // This displays information every time a new sentence is correctly encoded from the neo-6m
-      while (ss.available() > 0){
-        gps.encode(ss.read());
         if (gps.location.isUpdated()){
+          // latitude to 6 d.m.
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Lat= "); 
           lcd.print(gps.location.lat(), 6);
+          // longitude
           lcd.setCursor(0, 1);
           lcd.print(" Long= "); 
           lcd.println(gps.location.lng(), 6);
         }
-      }
       break;
 
     case 2:
-      debug(potValue, feature);
+      if (gps.location.isUpdated()){
+        // altitude in meters
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Altitude= "); 
+        lcd.print(gps.altitude.meters());
+        lcd.print("m");
+        // Altitude in feet (double)
+        lcd.setCursor(0, 1);
+        Serial.print("Altitude= "); 
+        Serial.println(gps.altitude.feet());
+        lcd.print("'");
+      }
       break;
 
     case 3:
-      debug(potValue, feature);
+      if (gps.location.isUpdated()){
+        // Raw date in DDMMYY format (u32)
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("DDMMYY= ");
+        lcd.println(gps.date.value());
+        lcd.setCursor(0,1);
+        // Raw time in HHMMSSCC format (u32)
+        lcd.print("time= "); 
+        lcd.println(gps.time.value());
+      }
       break;
 
     case 4:
-      debug(potValue, feature);
+      if (gps.location.isUpdated()){
+        // Speed in miles per hour (double)
+        Serial.print("Speed in miles/h = ");
+        Serial.println(gps.speed.mph()); 
+        // Speed in meters per second (double)
+        Serial.print("Speed in m/s = ");
+        Serial.println(gps.speed.mps());
+      }
       break;
 
     default:
