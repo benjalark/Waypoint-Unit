@@ -1,5 +1,5 @@
 # Waypoint-Unit
-A portable Arduino-based environmental monitoring device that measures temperature, pressure, humidity, altitude, and GPS location in real time.
+A portable Arduino-based environmental monitoring device that measures temperature, humidity, geolocation, altitude, speed, and date in real time.
 
 Currently under development.
 
@@ -7,22 +7,28 @@ Currently under development.
 
 ### Demo Video
 ![Demo GIF](demos/IMG_9146[1].gif)
-
+![Demo GIF](demos/gps_demo.gif)
 *Potentiometer switching logic*
+*Temp, humidity and coords*
+
 
 ### Latest Photo
-![Latest Demo](demos/IMG_9166.JPG)
-*DHT11 sensor implementation*
+![Latest Demo](demos/IMG_9175.JPG)
+*Full sensor implementation*
 
 ## Summary of software:
 - Environment: Arduino IDE.
 - Language: C++/Arduino.
+- Protocols: 9600 baud UART between Arduino <-> DHT11, NEO-6M
 
 ## Summary of Hardware:
 - Arduino UNO R3.
 - Current linkage via USB-B->USB-A.
 - Lenovo Thinkpad.
-- breadboard connected.
+- DHT11 temperature and humidity sensor.
+- NEO-6M GPS system.
+- Ceramic 24x24 mm antenna.
+- breadboard connections.
 
 ## Future version milestones:
 - Independent power source via AA batteries. (v2.0)
@@ -30,6 +36,5 @@ Currently under development.
 - 3D printed casing. (v3.0)
 
 ## Features needing development:
-- RF detection/transmission
-- real-time GPS
-- ergonomics
+- v1.0 has been developed!
+- v2.0 coming soon
