@@ -111,7 +111,7 @@ void loop() {
       break;
 
     case 3:
-      if (gps.location.isUpdated()){
+      if (gps.time.isUpdated()){
         // Raw date in DDMMYY format (u32)
         lcd.clear();
         lcd.setCursor(0, 0);
