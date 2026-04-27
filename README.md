@@ -8,8 +8,9 @@ Currently under development.
 ### Demo Video
 ![Demo GIF](demos/IMG_9146[1].gif)
 ![Demo GIF](demos/gps_demo.gif)
-*Potentiometer switching logic*
-*Temp, humidity and coords*
+*Left: Potentiometer switching logic*
+
+*Right: Temp, humidity and coords*
 
 
 ### Latest Photo
