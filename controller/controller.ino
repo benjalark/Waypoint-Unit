@@ -17,20 +17,16 @@ TinyGPSPlus gps;
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
+const int DHT = 8;
 const int NUM_MODES = 5;
 const int MAX_POT_VAL = 1023;
 
-const int dataPins[NUM_MODES] = {6,7,8,9,10};
-
-DHT_nonblocking dht_sensor(dataPins[2], DHT_TYPE_11);
+DHT_nonblocking dht_sensor(DHT, DHT_TYPE_11);
 
 void setup() {
   Serial.begin(9600);
   ss.begin(GPSBaud);
   lcd.begin(16, 2);
-  for(int i = 0; i < NUM_MODES; i++){
-    pinMode(dataPins[i], INPUT);
-  }
 }
 
 void loop() {
@@ -49,8 +45,6 @@ void loop() {
     lcd.clear();           // clear screen on mode switch
     lastFeature = feature;
   }
-  // turn everything off
-  off();
 
   // update gps while it's in use
   if(1<=feature<=4){
@@ -85,11 +79,11 @@ void loop() {
           // latitude to 6 d.m.
           lcd.clear();
           lcd.setCursor(0, 0);
-          lcd.print("Lat= "); 
+          lcd.print("Lat="); 
           lcd.print(gps.location.lat(), 6);
           // longitude
           lcd.setCursor(0, 1);
-          lcd.print(" Long= "); 
+          lcd.print(" Long="); 
           lcd.println(gps.location.lng(), 6);
         }
       break;
@@ -99,12 +93,12 @@ void loop() {
         // altitude in meters
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Altitude= "); 
+        lcd.print("Altitude="); 
         lcd.print(gps.altitude.meters());
         lcd.print("m");
         // Altitude in feet (double)
         lcd.setCursor(0, 1);
-        Serial.print("Altitude= "); 
+        Serial.print("Altitude="); 
         Serial.println(gps.altitude.feet());
         lcd.print("'");
       }
@@ -115,22 +109,25 @@ void loop() {
         // Raw date in DDMMYY format (u32)
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("DDMMYY= ");
+        lcd.print("DDMMYY=");
         lcd.println(gps.date.value());
         lcd.setCursor(0,1);
         // Raw time in HHMMSSCC format (u32)
-        lcd.print("time= "); 
+        lcd.print("t="); 
         lcd.println(gps.time.value());
       }
       break;
 
     case 4:
       if (gps.location.isUpdated()){
+        lcd.clear();
         // Speed in miles per hour (double)
-        Serial.print("Speed in miles/h = ");
+        lcd.setCursor(0, 0);
+        Serial.print("mph= ");
         Serial.println(gps.speed.mph()); 
         // Speed in meters per second (double)
-        Serial.print("Speed in m/s = ");
+        lcd.setCursor(0,1);
+        Serial.print("m/s= ");
         Serial.println(gps.speed.mps());
       }
       break;
@@ -138,14 +135,7 @@ void loop() {
     default:
       Serial.println("Invalid state");
   }
-
   delay(50); // small stability delay
-}
-void off(){
-  // turn all pins off
-  for(int i = 0; i < NUM_MODES; i++){
-    digitalWrite(dataPins[i], LOW);
-  }
 }
 void debug(int value, int feature){
   static int lastFeature = -1;
