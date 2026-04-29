@@ -14,7 +14,7 @@ Currently under development.
 
 
 ### Latest Photo
-![Latest Demo](schematics/circuit_diagram.PNG)
+![Latest Demo](schematics/circuit_diagram.png)
 *Circuit diagram*
 
 ## Summary of software:
