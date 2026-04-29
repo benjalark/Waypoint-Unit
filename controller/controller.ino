@@ -3,8 +3,7 @@
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
+// lcd init
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
@@ -12,16 +11,18 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 //for NEO-6m baud is set to default (9600)
 static const int RXPin = 6, TXPin = 7;
 static const uint32_t GPSBaud = 9600;
-// The TinyGPS++ object
+
 TinyGPSPlus gps;
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
+// dht11 pin
 const int DHT = 8;
+DHT_nonblocking dht_sensor(DHT, DHT_TYPE_11);
+
+// number of device modes
 const int NUM_MODES = 5;
 const int MAX_POT_VAL = 1023;
-
-DHT_nonblocking dht_sensor(DHT, DHT_TYPE_11);
 
 void setup() {
   Serial.begin(9600);
@@ -34,7 +35,7 @@ void loop() {
   static float humidity;
   static int lastFeature = -1;
 
-  // ALWAYS service DHT (critical)
+  // Always service DHT
   bool dht_ready = measure_environment(&temperature, &humidity);
 
   // read potentiometer
@@ -58,13 +59,11 @@ void loop() {
     case 0:
       if (dht_ready) {
         lcd.clear();  // clear before printing new reading
-
         // Line 1: Temperature
         lcd.setCursor(0, 0);
         lcd.print("T: ");
         lcd.print(temperature, 1);
         lcd.print(" C");
-
         // Line 2: Humidity
         lcd.setCursor(0, 1);
         lcd.print("H: ");
@@ -76,15 +75,15 @@ void loop() {
     case 1:
       // This displays information every time a new sentence is correctly encoded from the neo-6m
         if (gps.location.isUpdated()){
-          // latitude to 6 d.m.
+          // latitude to 5 d.p.
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Lat="); 
-          lcd.print(gps.location.lat(), 6);
+          lcd.print(gps.location.lat(), 5);
           // longitude
           lcd.setCursor(0, 1);
           lcd.print(" Long="); 
-          lcd.println(gps.location.lng(), 6);
+          lcd.println(gps.location.lng(), 5);
         }
       break;
 
@@ -96,10 +95,10 @@ void loop() {
         lcd.print("Altitude="); 
         lcd.print(gps.altitude.meters());
         lcd.print("m");
-        // Altitude in feet (double)
+        // Altitude in feet
         lcd.setCursor(0, 1);
-        Serial.print("Altitude="); 
-        Serial.println(gps.altitude.feet());
+        lcd.print("Altitude="); 
+        lcd.println(gps.altitude.feet());
         lcd.print("'");
       }
       break;
@@ -111,8 +110,8 @@ void loop() {
         lcd.setCursor(0, 0);
         lcd.print("DDMMYY=");
         lcd.println(gps.date.value());
-        lcd.setCursor(0,1);
         // Raw time in HHMMSSCC format (u32)
+        lcd.setCursor(0,1);
         lcd.print("t="); 
         lcd.println(gps.time.value());
       }
@@ -123,12 +122,12 @@ void loop() {
         lcd.clear();
         // Speed in miles per hour (double)
         lcd.setCursor(0, 0);
-        Serial.print("mph= ");
-        Serial.println(gps.speed.mph()); 
+        lcd.print("mph= ");
+        lcd.println(gps.speed.mph()); 
         // Speed in meters per second (double)
         lcd.setCursor(0,1);
-        Serial.print("m/s= ");
-        Serial.println(gps.speed.mps());
+        lcd.print("m/s= ");
+        lcd.println(gps.speed.mps());
       }
       break;
 
