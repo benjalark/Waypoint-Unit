@@ -6,8 +6,8 @@ Currently under development.
 ## Gallery
 
 ### Demo Video
-![Demo GIF](demos/IMG_9146[1].gif)
-![Demo GIF](demos/gps_demo.gif)
+![Demo GIF](docs/IMG_9146.gif)
+![Demo GIF](docs/gps_demo.gif)
 *Left: Potentiometer switching logic*
 
 *Right: Temp, humidity and coords*
