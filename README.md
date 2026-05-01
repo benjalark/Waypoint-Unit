@@ -7,7 +7,7 @@ Currently under development.
 
 ### Demo Video
 ![Demo GIF](docs/IMG_9146.gif)
-![Demo GIF](docs/gps_demo.gif)
+![Demo video](docs/all_features.mp4)
 *Left: Potentiometer switching logic*
 
 *Right: Temp, humidity and coords*
