@@ -14,8 +14,8 @@ Currently under development.
 
 
 ### Latest Photo
-![Latest Demo](demos/IMG_9175.JPG)
-*Full sensor implementation*
+![Latest Demo](schematics/circuit_diagram.png)
+*Circuit diagram*
 
 ## Summary of software:
 - Environment: Arduino IDE.
