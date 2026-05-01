@@ -179,5 +179,5 @@ void loop() {
       print2("Invalid mode", "");
   }
 
-  delay(50);
+  delay(10);
 }
