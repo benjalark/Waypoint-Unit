@@ -1,0 +1,18 @@
+Benchmarks
+
+POWER
+Supply voltage: 5.09 V <img src="IMG_9191.jpg" alt="voltage">   
+Current draw @20 degrees C: 118.6 mA <img src="IMG_9193.jpg" alt="current">   
+Power used @20 degrees C: 604 mW
+
+TIME
+Time to satellite connection (outdoors, cloudy day): 73.2 s
+Time to satellite connection (indoors, clear skies): 90.1 s
+Time to DHT11 output: 5 s
+
+NOTES
+current draw will likely change when device reaches a higher operating temperature.
+using a 12000 mAh battery pack, device expected to last 101.2 hours. 
+(from battery_life = battery_capacity/load_current)
+NEO-6M tested indoors underneath aluminum roof.
+Further NEO-6M testing should be done on clear days to get a more accurate benchmark.
