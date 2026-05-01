@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Benchmarks</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h2 { margin-top: 20px; }
+        .line { margin-bottom: 8px; }
+        img { height: 20px; vertical-align: middle; margin-left: 8px; }
+    </style>
+    <style>
+        img {
+            width: 300px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Benchmarks</h1>
+
+<h2>POWER</h2>
+<div class="line">Supply voltage: 5.09 V</div> 
+<div class="line"><img src="IMG_9191.jpg" alt="voltage"></div>
+
+<div class="line">Current draw @20°C: 118.6 mA</div>
+<div class="line"><img src="IMG_9193.jpg" alt="current"></div>
+
+<div class="line">
+    Power used @20°C: 604 mW
+</div>
+
+<h2>TIME</h2>
+<div class="line">Time to satellite connection (outdoors, cloudy day): 73.2 s</div>
+<div class="line">Time to satellite connection (indoors, clear skies): 90.1 s</div>
+<div class="line">Time to DHT11 output: 5 s</div>
+
+<h2>NOTES</h2>
+<p>
+Current draw will likely change when device reaches a higher operating temperature.
+</p>
+<p>
+Using a 12000 mAh battery pack, device expected to last 101.2 hours 
+(from battery_life = battery_capacity / load_current).
+</p>
+<p>
+NEO-6M tested indoors underneath aluminum roof. Further testing should be done on clear days for more accurate benchmarks.
+</p>
+
+</body>
+</html>
