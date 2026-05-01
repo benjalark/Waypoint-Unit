@@ -7,7 +7,7 @@ Currently under development.
 
 ### Demo Video
 ![Demo GIF](docs/IMG_9146.gif)
-![Demo GIF](docs/gps_demo.mp4)
+![Demo GIF](docs/gps_demo.gif)
 
 *Left: Potentiometer switching logic*
 
