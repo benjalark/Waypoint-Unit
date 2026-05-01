@@ -3,159 +3,131 @@
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 
-// lcd init
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+// LCD
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-//initialize gps pins and baud rate 
-//for NEO-6m baud is set to default (9600)
+// GPS
 static const int RXPin = 6, TXPin = 7;
 static const uint32_t GPSBaud = 9600;
-
 TinyGPSPlus gps;
-// The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
-// dht11 pin
-const int DHT = 8;
-DHT_nonblocking dht_sensor(DHT, DHT_TYPE_11);
+// DHT11
+#define DHT_PIN 8
+DHT_nonblocking dht_sensor(DHT_PIN, DHT_TYPE_11);
 
-// number of device modes
-const int NUM_MODES = 5;
-const int MAX_POT_VAL = 1023;
+// Modes
+#define NUM_MODES 5
+#define POT_PIN A0
+
+// State
+float temperature = 0, humidity = 0;
+int lastFeature = -1;
+unsigned long lastDHTUpdate = 0;
 
 void setup() {
   Serial.begin(9600);
   ss.begin(GPSBaud);
   lcd.begin(16, 2);
+  lcd.print("Initializing...");
+}
+
+// Nice printing function
+void print2(const char* l1, const char* l2) {
+  lcd.setCursor(0, 0);
+  lcd.print("                "); // clear line
+  lcd.setCursor(0, 0);
+  lcd.print(l1);
+
+  lcd.setCursor(0, 1);
+  lcd.print("                ");
+  lcd.setCursor(0, 1);
+  lcd.print(l2);
+}
+
+// DHT non-blocking read
+bool updateDHT() {
+  if (dht_sensor.measure(&temperature, &humidity)) {
+    if (millis() - lastDHTUpdate > 3000ul) { // DHT11 ~1Hz safe
+      lastDHTUpdate = millis();
+      return true;
+    }
+  }
+  return false;
 }
 
 void loop() {
-  static float temperature;
-  static float humidity;
-  static int lastFeature = -1;
+  // Always feed GPS parser (non-blocking)
+  while (ss.available()) {
+    gps.encode(ss.read());
+  }
 
-  // Always service DHT
-  bool dht_ready = measure_environment(&temperature, &humidity);
+  // Read mode selector
+  int feature = (analogRead(POT_PIN) * NUM_MODES) / 1024;
 
-  // read potentiometer
-  int potValue = analogRead(A0);
-  int feature = (potValue * NUM_MODES) / (MAX_POT_VAL + 1); // 0–5
-
+  // Mode change handling
   if (feature != lastFeature) {
-    lcd.clear();           // clear screen on mode switch
+    lcd.clear();
     lastFeature = feature;
   }
 
-  // update gps while it's in use
-  if(1<=feature<=4){
-    while (ss.available() > 0){
-        gps.encode(ss.read());
-    }
-  }
+  switch (feature) {
 
-  // feature selection
-  switch(feature){
+    // MODE 0: TEMP + HUM
     case 0:
-      if (dht_ready) {
-        lcd.clear();  // clear before printing new reading
-        // Line 1: Temperature
-        lcd.setCursor(0, 0);
-        lcd.print("T: ");
-        lcd.print(temperature, 1);
-        lcd.print(" C");
-        // Line 2: Humidity
-        lcd.setCursor(0, 1);
-        lcd.print("H: ");
-        lcd.print(humidity, 1);
-        lcd.print(" %");
+      if (updateDHT()) {
+        char l1[17], l2[17];
+        snprintf(l1, 17, "T: %.1f C", temperature);
+        snprintf(l2, 17, "H: %.1f %%", humidity);
+        print2(l1, l2);
       }
       break;
 
+    // MODE 1: LAT/LON
     case 1:
-      // This displays information every time a new sentence is correctly encoded from the neo-6m
-        if (gps.location.isUpdated()){
-          // latitude to 5 d.p.
-          lcd.clear();
-          lcd.setCursor(0, 0);
-          lcd.print("Lat="); 
-          lcd.print(gps.location.lat(), 5);
-          // longitude
-          lcd.setCursor(0, 1);
-          lcd.print(" Long="); 
-          lcd.println(gps.location.lng(), 5);
-        }
+      if (gps.location.isUpdated()) {
+        char l1[17], l2[17];
+        snprintf(l1, 17, "Lat: %.4f", gps.location.lat());
+        snprintf(l2, 17, "Lon: %.4f", gps.location.lng());
+        print2(l1, l2);
+      }
       break;
 
+    // MODE 2: ALTITUDE
     case 2:
-      if (gps.location.isUpdated()){
-        // altitude in meters
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Altitude="); 
-        lcd.print(gps.altitude.meters());
-        lcd.print("m");
-        // Altitude in feet
-        lcd.setCursor(0, 1);
-        lcd.print("Altitude="); 
-        lcd.println(gps.altitude.feet());
-        lcd.print("'");
+      if (gps.altitude.isUpdated()) {
+        char l1[17], l2[17];
+        snprintf(l1, 17, "Alt: %.0f m", gps.altitude.meters());
+        snprintf(l2, 17, "Alt: %.0f ft", gps.altitude.feet());
+        print2(l1, l2);
       }
       break;
 
+    // MODE 3: DATE/TIME
     case 3:
-      if (gps.time.isUpdated()){
-        // Raw date in DDMMYY format (u32)
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("DDMMYY=");
-        lcd.println(gps.date.value());
-        // Raw time in HHMMSSCC format (u32)
-        lcd.setCursor(0,1);
-        lcd.print("t="); 
-        lcd.println(gps.time.value());
+      if (gps.time.isUpdated() && gps.date.isUpdated()) {
+        char l1[17], l2[17];
+        snprintf(l1, 17, "%02d/%02d/%02d",
+          gps.date.day(), gps.date.month(), gps.date.year() % 100);
+        snprintf(l2, 17, "%02d:%02d:%02d",
+          gps.time.hour(), gps.time.minute(), gps.time.second());
+        print2(l1, l2);
       }
       break;
 
+    // MODE 4: SPEED
     case 4:
-      if (gps.location.isUpdated()){
-        lcd.clear();
-        // Speed in miles per hour (double)
-        lcd.setCursor(0, 0);
-        lcd.print("mph= ");
-        lcd.println(gps.speed.mph()); 
-        // Speed in meters per second (double)
-        lcd.setCursor(0,1);
-        lcd.print("m/s= ");
-        lcd.println(gps.speed.mps());
+      if (gps.speed.isUpdated()) {
+        char l1[17], l2[17];
+        snprintf(l1, 17, "mph: %.1f", gps.speed.mph());
+        snprintf(l2, 17, "m/s: %.1f", gps.speed.mps());
+        print2(l1, l2);
       }
       break;
 
     default:
-      Serial.println("Invalid state");
+      print2("Invalid mode", "");
   }
-  delay(50); // small stability delay
-}
-void debug(int value, int feature){
-  static int lastFeature = -1;
 
-  if (feature != lastFeature) {
-    Serial.print("Value: ");
-    Serial.print(value);
-    Serial.print(" Region: ");
-    Serial.println(feature);
-    lastFeature = feature;
-  }
-}
-// DHT11 (feature 1)
-static bool measure_environment(float *temperature, float *humidity)
-{
-  static unsigned long last_output = 0;
-  bool ready = dht_sensor.measure(temperature, humidity);
-
-  if (ready && millis() - last_output > 3000ul) {
-    last_output = millis();
-    return true;
-  }
-  return false;
+  delay(50);
 }
